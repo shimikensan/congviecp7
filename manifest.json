@@ -1,0 +1,21 @@
+{
+  "name": "Pro To-Do List Manager",
+  "short_name": "ProTasks",
+  "description": "Ứng dụng quản lý nhiệm vụ chuyên nghiệp",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0d9488",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2098/2098402.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2098/2098402.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
