@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pro-tasks-square-v1'; // ĐỔI SỐ NÀY KHI CẬP NHẬT
+const CACHE_NAME = 'pro-tasks-search-v2'; // Đổi số này để kích hoạt nút cập nhật
 const assets = [
   './',
   './index.html',
