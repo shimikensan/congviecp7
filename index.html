@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pro Tasks Square Search</title>
+    <title>Pro Tasks Square Manager</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4f46e5">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,6 +21,7 @@
         .dark-mode input, .dark-mode select { background-color: #334155; color: white; border-color: #475569; }
         .animate-pop { animation: pop 0.2s ease-out; }
         @keyframes pop { 0% { transform: scale(0.98); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        /* Cưỡng ép vuông vức toàn bộ giao diện */
         * { border-radius: 0 !important; }
     </style>
 </head>
@@ -75,12 +76,11 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-3 border-b space-y-3">
+        <div class="bg-white dark:bg-slate-900 p-3 border-b space-y-3 shadow-sm">
             <div class="relative">
                 <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
                 <input type="text" id="searchInput" oninput="render()" placeholder="Tìm kiếm tên nhiệm vụ hoặc người thực hiện..." class="w-full border pl-9 pr-4 py-2 text-xs outline-none focus:border-indigo-500 dark:bg-slate-800">
             </div>
-            
             <div class="flex bg-gray-100 dark:bg-slate-800 p-1">
                 <button onclick="setFilter('all')" id="f-all" class="flex-1 py-2 text-[9px] font-black bg-indigo-600 text-white uppercase">Tất cả</button>
                 <button onclick="setFilter('active')" id="f-active" class="flex-1 py-2 text-[9px] font-black text-gray-400 uppercase">Đang làm</button>
@@ -106,6 +106,7 @@
         if (isDarkMode) document.body.classList.add('dark-mode');
         document.getElementById('date-display').innerText = new Date().toLocaleDateString('vi-VN', {weekday:'long', day:'numeric', month:'long'});
 
+        // SW Update Logic
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js').then(reg => {
                 reg.addEventListener('updatefound', () => {
@@ -182,12 +183,13 @@
                 div.innerHTML = `
                     <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})" class="mt-1 w-6 h-6 accent-indigo-600 shrink-0">
                     <div class="flex-1 min-w-0">
-                        <div class="${task.completed ? 'task-done text-gray-400' : 'font-bold text-gray-800 dark:text-gray-100'} text-sm">
+                        <div class="${task.completed ? 'task-done text-gray-400' : 'font-bold text-gray-800 dark:text-gray-100'} text-sm leading-tight">
                             ${task.text} ${overdue ? '<span class="ml-2 text-[8px] bg-red-600 text-white px-2 py-0.5 font-black uppercase">Quá hạn</span>' : ''}
                         </div>
                         <div class="flex flex-col gap-1 mt-2 text-[9px] uppercase font-bold text-gray-400">
                             <span><i class="fas fa-user-circle mr-1"></i>${task.assignee || '---'}</span>
-                            <span class="${overdue ? 'text-red-600 font-black' : 'text-indigo-400'}"><i class="fas fa-hourglass-end mr-1"></i>Hạn: ${task.deadline ? new Date(task.deadline).toLocaleString('vi-VN') : '---'}</span>
+                            <span class="text-blue-500"><i class="fas fa-play mr-1"></i>Bắt đầu: ${task.time ? new Date(task.time).toLocaleString('vi-VN') : '---'}</span>
+                            <span class="${overdue ? 'text-red-600 font-black' : 'text-red-400'}"><i class="fas fa-hourglass-end mr-1"></i>Hạn chót: ${task.deadline ? new Date(task.deadline).toLocaleString('vi-VN') : '---'}</span>
                         </div>
                     </div>
                     <div class="flex gap-1"><button onclick="editTask(${task.id})" class="text-indigo-400 p-2"><i class="fas fa-pen"></i></button><button onclick="moveToTrash(${task.id})" class="text-red-300 p-2"><i class="fas fa-trash"></i></button></div>
@@ -197,6 +199,7 @@
             renderChart();
         }
 
+        // Trash Logic
         function moveToTrash(id) {
             const index = tasks.findIndex(t => t.id === id);
             const task = tasks.splice(index, 1)[0];
@@ -206,14 +209,14 @@
 
         function renderTrash() {
             const tList = document.getElementById('trashList');
-            tList.innerHTML = trash.length === 0 ? '<div class="text-gray-400 italic">Thùng rác trống</div>' : '';
+            tList.innerHTML = trash.length === 0 ? '<div class="text-gray-400 italic text-[10px]">Thùng rác trống</div>' : '';
             trash.forEach((t, i) => {
                 const div = document.createElement('div');
-                div.className = "flex justify-between items-center p-2 bg-white dark:bg-slate-700 border dark:border-slate-600 mb-2";
-                div.innerHTML = `<span class="truncate mr-2 text-[11px]">${t.text}</span>
+                div.className = "flex justify-between items-center p-2 bg-white dark:bg-slate-700 border dark:border-slate-600 mb-1";
+                div.innerHTML = `<span class="truncate mr-2 text-[10px]">${t.text}</span>
                     <div class="flex gap-2">
-                        <button onclick="restoreTask(${i})" class="text-green-600 font-bold uppercase text-[9px]">Phục hồi</button>
-                        <button onclick="permanentDelete(${i})" class="text-red-500 font-bold uppercase text-[9px]">Xóa hẳn</button>
+                        <button onclick="restoreTask(${i})" class="text-green-600 font-bold uppercase text-[8px]">Phục hồi</button>
+                        <button onclick="permanentDelete(${i})" class="text-red-500 font-bold uppercase text-[8px]">Xóa hẳn</button>
                     </div>`;
                 tList.appendChild(div);
             });
@@ -250,12 +253,15 @@
         }
 
         function isOverdue(deadline) { return deadline ? new Date(deadline) < new Date() : false; }
+        
         function saveAndRender() { 
             localStorage.setItem('todo_pro_final', JSON.stringify(tasks)); 
             localStorage.setItem('todo_trash', JSON.stringify(trash));
             render(); 
         }
+
         function toggleTask(id) { const idx = tasks.findIndex(t => t.id == id); tasks[idx].completed = !tasks[idx].completed; saveAndRender(); }
+
         function editTask(id) {
             const task = tasks.find(t => t.id == id);
             document.getElementById('editId').value = task.id;
@@ -264,28 +270,37 @@
             document.getElementById('timeInput').value = task.time || '';
             document.getElementById('deadlineInput').value = task.deadline || '';
             document.getElementById('priorityInput').value = task.priority;
-            document.getElementById('btnAction').innerText = 'CẬP NHẬT';
+            document.getElementById('btnAction').innerText = 'CẬP NHẬT NHIỆM VỤ';
             if(document.getElementById('inputForm').classList.contains('hidden')) toggleForm();
         }
+
         function resetForm() { ['editId','taskInput','assigneeInput','timeInput','deadlineInput'].forEach(i => document.getElementById(i).value = ''); document.getElementById('btnAction').innerText = 'LƯU NHIỆM VỤ'; }
-        
+
         function exportBackup() {
             const dataStr = JSON.stringify(tasks, null, 2);
             const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
             const link = document.createElement('a'); link.setAttribute('href', dataUri);
-            link.setAttribute('download', `Backup_${new Date().toISOString().slice(0,10)}.json`); link.click();
+            link.setAttribute('download', `Backup_Tasks_${new Date().toISOString().slice(0,10)}.json`); link.click();
         }
+
         function importBackup(e) {
             const file = e.target.files[0]; if(!file) return;
-            const r = new FileReader(); r.onload = (ev) => { tasks = JSON.parse(ev.target.result); saveAndRender(); location.reload(); };
+            const r = new FileReader(); r.onload = (ev) => { 
+                try {
+                    tasks = JSON.parse(ev.target.result); saveAndRender(); location.reload(); 
+                } catch(err) { alert("File không hợp lệ!"); }
+            };
             r.readAsText(file);
         }
+
         function setFilter(f) {
             currentStatusFilter = f;
             document.querySelectorAll('[id^="f-"]').forEach(b => b.className = 'flex-1 py-2 text-[9px] font-black text-gray-400 uppercase');
             document.getElementById('f-'+f).className = 'flex-1 py-2 text-[9px] font-black bg-indigo-600 text-white uppercase';
             render();
         }
+
+        // Thông báo quá hạn
         setInterval(() => {
             tasks.forEach(t => {
                 if(t.deadline && !t.completed && !t.notified && new Date() >= new Date(t.deadline)) {
@@ -294,6 +309,7 @@
                 }
             });
         }, 60000);
+
         render();
     </script>
 </body>
