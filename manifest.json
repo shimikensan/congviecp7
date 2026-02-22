@@ -1,6 +1,6 @@
 {
-  "name": "Pro Tasks Manager",
-  "short_name": "ProTasks",
+  "name": "Pro Tasks Square",
+  "short_name": "TasksSq",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#4f46e5",

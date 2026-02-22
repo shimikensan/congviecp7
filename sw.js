@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pro-tasks-v1'; // ĐỔI SỐ NÀY KHI BẠN CẬP NHẬT CODE
+const CACHE_NAME = 'pro-tasks-square-v1'; // ĐỔI SỐ NÀY KHI CẬP NHẬT
 const assets = [
   './',
   './index.html',
