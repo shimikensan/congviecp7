@@ -3,32 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MG Tasks P7</title>
+    <title>Pro Tasks PWA</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0d9488">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2098/2098402.png">
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
-        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s; }
         .task-done { text-decoration: line-through; opacity: 0.5; }
         .priority-high { border-left: 5px solid #ef4444; }
         .priority-medium { border-left: 5px solid #f59e0b; }
         .priority-low { border-left: 5px solid #10b981; }
-
-        /* Dark Mode High Contrast */
         .dark-mode { background-color: #0f172a; color: #f8fafc; }
         .dark-mode .bg-card { background-color: #1e293b; color: #ffffff; }
-        .dark-mode .text-main { color: #ffffff; }
-        .dark-mode .text-sub { color: #94a3b8; }
-        .dark-mode border, .dark-mode .border-b, .dark-mode .border { border-color: #334155; }
         .dark-mode input, .dark-mode select { background-color: #334155; color: white; border-color: #475569; }
-        .dark-mode .bg-gray-50 { background-color: #0f172a; }
-
         .animate-pop { animation: pop 0.2s ease-out; }
         @keyframes pop { 0% { transform: scale(0.95); } 100% { transform: scale(1); } }
     </style>
@@ -38,112 +27,93 @@
     <div class="max-w-md mx-auto md:max-w-2xl shadow-2xl md:mt-10 rounded-3xl overflow-hidden bg-white bg-card">
         <div class="bg-gradient-to-r from-teal-600 to-indigo-700 p-6 text-white flex justify-between items-center">
             <div>
-                <h1 class="text-2xl font-bold tracking-tight">PMQL Công việc P7 📋</h1>
+                <h1 class="text-2xl font-bold tracking-tight">Nhiệm Vụ 📋</h1>
                 <p id="date-display" class="text-xs opacity-90 capitalize font-medium"></p>
             </div>
-            <button onclick="toggleDarkMode()" class="p-3 rounded-2xl bg-white/20 hover:bg-white/30 transition">
-                <i id="darkIcon" class="fas fa-moon text-xl"></i>
-            </button>
+            <button onclick="toggleDarkMode()" class="p-3 rounded-2xl bg-white/20"><i id="darkIcon" class="fas fa-moon text-xl"></i></button>
         </div>
 
         <div id="inputForm" class="hidden p-5 border-b space-y-3 bg-teal-50 dark:bg-slate-800/50 animate-pop">
-            <div class="flex justify-between items-center mb-1">
-                <span class="text-sm font-bold text-teal-600 dark:text-teal-400">Chi tiết nhiệm vụ</span>
-                <button onclick="toggleForm()" class="text-gray-400 p-2"><i class="fas fa-times"></i></button>
-            </div>
+            <div class="flex justify-between items-center"><span class="text-sm font-bold text-teal-600">Chi tiết nhiệm vụ</span><button onclick="toggleForm()" class="text-gray-400 p-2"><i class="fas fa-times"></i></button></div>
             <input type="hidden" id="editId">
-            <input type="text" id="taskInput" placeholder="Tên việc cần làm..." class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-teal-500 font-medium dark:text-white">
+            <input type="text" id="taskInput" placeholder="Tên việc cần làm..." class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-teal-500 font-medium">
             
-            <div class="grid grid-cols-2 gap-3">
-                <input type="text" id="assigneeInput" placeholder="Người làm" class="border rounded-xl px-4 py-2 outline-none text-sm">
-                <input type="datetime-local" id="timeInput" class="border rounded-xl px-4 py-2 outline-none text-sm">
+            <div class="grid grid-cols-1 gap-3">
+                <input type="text" id="assigneeInput" placeholder="Người thực hiện" class="border rounded-xl px-4 py-2 outline-none text-sm">
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="flex flex-col"><label class="text-[10px] ml-2 text-gray-500 uppercase font-bold">Thời gian thực hiện</label><input type="datetime-local" id="timeInput" class="border rounded-xl px-4 py-2 outline-none text-sm"></div>
+                    <div class="flex flex-col"><label class="text-[10px] ml-2 text-red-500 uppercase font-bold">Hạn chót (Deadline)</label><input type="datetime-local" id="deadlineInput" class="border rounded-xl px-4 py-2 outline-none text-sm border-red-200"></div>
+                </div>
             </div>
 
             <div class="flex gap-2">
-                <select id="priorityInput" class="flex-1 border rounded-xl px-3 py-2 text-sm font-semibold bg-gray-50">
-                    <option value="low">Ưu tiên: Thấp</option>
-                    <option value="medium">Ưu tiên: Vừa</option>
-                    <option value="high">Ưu tiên: Cao</option>
-                </select>
-                <button onclick="handleTask()" id="btnAction" class="flex-[2] bg-teal-600 text-white font-bold rounded-xl py-3 shadow-lg hover:bg-teal-700 transition active:scale-95">LƯU</button>
+                <select id="priorityInput" class="flex-1 border rounded-xl px-3 py-2 text-sm font-semibold"><option value="low">Thấp</option><option value="medium">Vừa</option><option value="high">Cao</option></select>
+                <button onclick="handleTask()" id="btnAction" class="flex-[2] bg-teal-600 text-white font-bold rounded-xl py-3 shadow-lg active:scale-95 transition">LƯU</button>
             </div>
         </div>
 
         <div class="bg-gray-50 dark:bg-slate-900 p-3 border-b space-y-3">
-            <div class="flex items-center gap-2">
-                <span class="text-[10px] font-black uppercase text-gray-400">Lọc ngày:</span>
-                <input type="date" id="dateFilter" onchange="render()" class="flex-1 border rounded-lg px-3 py-1 text-sm outline-none">
-                <button onclick="resetDateFilter()" class="text-xs text-teal-600 font-bold">Tất cả</button>
-            </div>
+            <div class="flex items-center gap-2"><span class="text-[10px] font-black uppercase text-gray-400">Lọc ngày:</span><input type="date" id="dateFilter" onchange="render()" class="flex-1 border rounded-lg px-3 py-1 text-sm outline-none"><button onclick="resetDateFilter()" class="text-xs text-teal-600 font-bold">Tất cả</button></div>
             <div class="flex bg-white dark:bg-slate-800 rounded-xl p-1 shadow-sm">
-                <button onclick="setFilter('all')" id="f-all" class="flex-1 py-2 rounded-lg text-xs font-bold transition bg-teal-600 text-white">TẤT CẢ</button>
-                <button onclick="setFilter('active')" id="f-active" class="flex-1 py-2 rounded-lg text-xs font-bold text-gray-400">ĐANG LÀM</button>
-                <button onclick="setFilter('completed')" id="f-completed" class="flex-1 py-2 rounded-lg text-xs font-bold text-gray-400">ĐÃ XONG</button>
+                <button onclick="setFilter('all')" id="f-all" class="flex-1 py-2 rounded-lg text-xs font-bold transition bg-teal-600 text-white uppercase">Tất cả</button>
+                <button onclick="setFilter('active')" id="f-active" class="flex-1 py-2 rounded-lg text-xs font-bold text-gray-400 uppercase">Đang làm</button>
+                <button onclick="setFilter('completed')" id="f-completed" class="flex-1 py-2 rounded-lg text-xs font-bold text-gray-400 uppercase">Đã xong</button>
             </div>
         </div>
 
         <div id="taskList" class="min-h-[400px] max-h-[60vh] overflow-y-auto divide-y dark:divide-slate-700"></div>
-
-        <div class="p-4 text-[10px] text-gray-400 flex justify-between items-center bg-gray-50 dark:bg-slate-900">
-            <span id="taskCount" class="font-black uppercase tracking-widest">0 NHIỆM VỤ</span>
-            <span>VB Design</span>
-            <button onclick="clearCompleted()" class="hover:text-red-500 font-black uppercase">Xóa mục đã xong</button>
-        </div>
     </div>
 
-    <button onclick="toggleForm()" class="fixed bottom-8 right-8 w-16 h-16 bg-teal-600 text-white rounded-full shadow-2xl flex items-center justify-center text-2xl active:scale-90 transition-all z-50 ring-4 ring-white dark:ring-slate-800">
-        <i class="fas fa-plus" id="fabIcon"></i>
-    </button>
+    <button onclick="toggleForm()" class="fixed bottom-8 right-8 w-16 h-16 bg-teal-600 text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-50 ring-4 ring-white dark:ring-slate-800"><i class="fas fa-plus" id="fabIcon"></i></button>
+
+    <audio id="alarmSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
 
     <script>
-        let tasks = JSON.parse(localStorage.getItem('todo_pwa_v5')) || [];
+        let tasks = JSON.parse(localStorage.getItem('todo_pwa_v6')) || [];
         let currentStatusFilter = 'all';
         let isDarkMode = localStorage.getItem('dark_mode') === 'true';
 
-        if (isDarkMode) {
-            document.body.classList.add('dark-mode');
-            document.getElementById('darkIcon').className = 'fas fa-sun text-xl';
-        }
+        if (isDarkMode) document.body.classList.add('dark-mode');
 
         function toggleDarkMode() {
             isDarkMode = !isDarkMode;
             document.body.classList.toggle('dark-mode');
-            document.getElementById('darkIcon').className = isDarkMode ? 'fas fa-sun text-xl' : 'fas fa-moon text-xl';
             localStorage.setItem('dark_mode', isDarkMode);
         }
 
         function toggleForm() {
             const form = document.getElementById('inputForm');
-            const icon = document.getElementById('fabIcon');
             const isHidden = form.classList.toggle('hidden');
-            icon.className = isHidden ? 'fas fa-plus' : 'fas fa-minus';
-            if(!isHidden) {
-                document.getElementById('taskInput').focus();
-                window.scrollTo({top: 0, behavior: 'smooth'});
-            } else {
-                resetForm();
-                document.getElementById('btnAction').innerText = 'LƯU';
-            }
+            document.getElementById('fabIcon').className = isHidden ? 'fas fa-plus' : 'fas fa-minus';
+            if(!isHidden) window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         function handleTask() {
             const id = document.getElementById('editId').value;
             const text = document.getElementById('taskInput').value;
-            const assignee = document.getElementById('assigneeInput').value;
-            const time = document.getElementById('timeInput').value;
-            const priority = document.getElementById('priorityInput').value;
+            if (!text) return alert("Nhập tên việc!");
 
-            if (!text) return alert("Hãy nhập nội dung!");
+            const taskData = {
+                id: id ? parseInt(id) : Date.now(),
+                text,
+                assignee: document.getElementById('assigneeInput').value,
+                time: document.getElementById('timeInput').value,
+                deadline: document.getElementById('deadlineInput').value,
+                priority: document.getElementById('priorityInput').value,
+                completed: false,
+                notified: false
+            };
 
             if (id) {
                 const idx = tasks.findIndex(t => t.id == id);
-                tasks[idx] = { ...tasks[idx], text, assignee, time, priority };
+                tasks[idx] = { ...tasks[idx], ...taskData };
             } else {
-                tasks.unshift({ id: Date.now(), text, assignee, time, priority, completed: false });
+                tasks.unshift(taskData);
             }
 
             saveAndRender();
             toggleForm();
+            resetForm();
         }
 
         function render() {
@@ -164,31 +134,49 @@
                 div.innerHTML = `
                     <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})" class="mt-1 w-6 h-6 accent-teal-500 shrink-0">
                     <div class="flex-1 min-w-0">
-                        <div class="${task.completed ? 'task-done text-gray-400' : 'text-main font-bold'} text-base break-words">${task.text}</div>
-                        <div class="flex flex-wrap gap-3 mt-2">
-                            <span class="text-[11px] text-sub flex items-center gap-1 font-medium"><i class="fas fa-user-circle"></i> ${task.assignee || 'N/A'}</span>
-                            <span class="text-[11px] text-sub flex items-center gap-1 font-medium"><i class="fas fa-clock"></i> ${task.time ? new Date(task.time).toLocaleString('vi-VN') : '---'}</span>
+                        <div class="${task.completed ? 'task-done text-gray-400' : 'font-bold text-main'}">${task.text}</div>
+                        <div class="grid grid-cols-1 gap-1 mt-2">
+                            <span class="text-[10px] text-gray-500 uppercase"><i class="fas fa-user-circle mr-1"></i>${task.assignee || '---'}</span>
+                            <span class="text-[10px] text-blue-500 uppercase"><i class="fas fa-play mr-1"></i>Bắt đầu: ${task.time ? new Date(task.time).toLocaleString('vi-VN') : '---'}</span>
+                            <span class="text-[10px] ${isOverdue(task.deadline) ? 'text-red-600 font-bold' : 'text-red-400'} uppercase"><i class="fas fa-hourglass-end mr-1"></i>Hạn: ${task.deadline ? new Date(task.deadline).toLocaleString('vi-VN') : '---'}</span>
                         </div>
                     </div>
-                    <div class="flex gap-1">
-                        <button onclick="editTask(${task.id})" class="text-teal-500 p-2"><i class="fas fa-pen"></i></button>
-                        <button onclick="deleteTask(${task.id})" class="text-red-400 p-2"><i class="fas fa-trash"></i></button>
-                    </div>
+                    <div class="flex gap-1"><button onclick="editTask(${task.id})" class="text-teal-500 p-2"><i class="fas fa-pen"></i></button><button onclick="deleteTask(${task.id})" class="text-red-400 p-2"><i class="fas fa-trash"></i></button></div>
                 `;
                 list.appendChild(div);
             });
-            document.getElementById('taskCount').innerText = `${filtered.length} NHIỆM VỤ`;
         }
 
-        function editTask(id) {
-            const task = tasks.find(t => t.id == id);
-            document.getElementById('editId').value = task.id;
-            document.getElementById('taskInput').value = task.text;
-            document.getElementById('assigneeInput').value = task.assignee || '';
-            document.getElementById('timeInput').value = task.time || '';
-            document.getElementById('priorityInput').value = task.priority;
-            document.getElementById('btnAction').innerText = 'CẬP NHẬT';
-            if(document.getElementById('inputForm').classList.contains('hidden')) toggleForm();
+        function isOverdue(deadline) {
+            if (!deadline) return false;
+            return new Date(deadline) < new Date();
+        }
+
+        // Logic thông báo tự động
+        function checkDeadlines() {
+            const now = new Date();
+            tasks.forEach(task => {
+                if (task.deadline && !task.completed && !task.notified) {
+                    const deadlineTime = new Date(task.deadline);
+                    if (now >= deadlineTime) {
+                        task.notified = true;
+                        document.getElementById('alarmSound').play();
+                        if (Notification.permission === "granted") {
+                            new Notification("HẾT HẠN NHIỆM VỤ!", { body: `Nhiệm vụ: ${task.text} đã đến hạn chót!`, icon: "https://cdn-icons-png.flaticon.com/512/2098/2098402.png" });
+                        } else {
+                            alert(`HẾT HẠN: ${task.text}`);
+                        }
+                        saveAndRender();
+                    }
+                }
+            });
+        }
+
+        setInterval(checkDeadlines, 60000); // Kiểm tra mỗi phút
+
+        // Yêu cầu quyền thông báo
+        if ("Notification" in window && Notification.permission !== "granted") {
+            Notification.requestPermission();
         }
 
         function toggleTask(id) {
@@ -197,41 +185,26 @@
             saveAndRender();
         }
 
-        function deleteTask(id) {
-            if(confirm('Xóa nhiệm vụ?')) {
-                tasks = tasks.filter(t => t.id != id);
-                saveAndRender();
-            }
+        function editTask(id) {
+            const task = tasks.find(t => t.id == id);
+            document.getElementById('editId').value = task.id;
+            document.getElementById('taskInput').value = task.text;
+            document.getElementById('assigneeInput').value = task.assignee || '';
+            document.getElementById('timeInput').value = task.time || '';
+            document.getElementById('deadlineInput').value = task.deadline || '';
+            document.getElementById('priorityInput').value = task.priority;
+            document.getElementById('btnAction').innerText = 'CẬP NHẬT';
+            if(document.getElementById('inputForm').classList.contains('hidden')) toggleForm();
         }
 
-        function saveAndRender() {
-            localStorage.setItem('todo_pwa_v5', JSON.stringify(tasks));
-            render();
-        }
-
-        function resetForm() {
-            document.getElementById('editId').value = '';
-            ['taskInput', 'assigneeInput', 'timeInput'].forEach(id => document.getElementById(id).value = '');
-            document.getElementById('priorityInput').value = 'low';
-        }
-
-        function resetDateFilter() {
-            document.getElementById('dateFilter').value = '';
-            render();
-        }
-
-        function setFilter(f) {
-            currentStatusFilter = f;
-            document.querySelectorAll('[id^="f-"]').forEach(b => b.className = 'flex-1 py-2 rounded-lg text-xs font-bold text-gray-400');
-            document.getElementById('f-' + f).className = 'flex-1 py-2 rounded-lg text-xs font-bold bg-teal-600 text-white';
-            render();
-        }
-
-        // Đăng ký Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW error:', err));
-            });
+        function saveAndRender() { localStorage.setItem('todo_pwa_v6', JSON.stringify(tasks)); render(); }
+        function resetForm() { ['editId', 'taskInput', 'assigneeInput', 'timeInput', 'deadlineInput'].forEach(i => document.getElementById(i).value = ''); }
+        function deleteTask(id) { if(confirm('Xóa?')) { tasks = tasks.filter(t => t.id != id); saveAndRender(); } }
+        function setFilter(f) { 
+            currentStatusFilter = f; 
+            document.querySelectorAll('[id^="f-"]').forEach(b => b.className = 'flex-1 py-2 rounded-lg text-xs font-bold text-gray-400 uppercase');
+            document.getElementById('f-'+f).className = 'flex-1 py-2 rounded-lg text-xs font-bold bg-teal-600 text-white uppercase';
+            render(); 
         }
 
         document.getElementById('date-display').innerText = new Date().toLocaleDateString('vi-VN', {weekday:'long', day:'numeric', month:'long'});
